@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Nested types compiles inputs 1`] = `
+"export function QuestionSchema(): yup.SchemaOf<Question> {
+  return yup.object({
+    __typename: yup.mixed().oneOf(['Question', undefined]),
+    str: yup.string().defined()
+  })
+}
+
+export function WhyQuestionSchema(): yup.SchemaOf<WhyQuestion> {
+  return yup.object({
+    __typename: yup.mixed().oneOf(['WhyQuestion', undefined]),
+    str: yup.string().defined(),
+    something: yup.string().defined()
+  })
+}
+
+export function QuestionAnswerSchema(): yup.SchemaOf<QuestionAnswer> {
+  return yup.object({
+    __typename: yup.mixed().oneOf(['QuestionAnswer', undefined]),
+    question: QuestionSchema().defined(),
+    answer: yup.string().defined()
+  })
+}
+"
+`;

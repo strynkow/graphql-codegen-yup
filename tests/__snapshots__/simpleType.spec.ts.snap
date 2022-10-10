@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Simple types compiles inputs 1`] = `
+"export function SomethingSchema(): yup.SchemaOf<Something> {
+  return yup.object({
+    str: yup.string().defined()
+  })
+}
+"
+`;
+
+exports[`Simple types compiles types 1`] = `
+"export function WhateverSchema(): yup.SchemaOf<Whatever> {
+  return yup.object({
+    __typename: yup.mixed().oneOf(['Whatever', undefined]),
+    str: yup.string().defined(),
+    num: yup.number().defined()
+  })
+}
+"
+`;
