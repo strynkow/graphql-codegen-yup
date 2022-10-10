@@ -1,4 +1,4 @@
-import { GraphQLSchema, TypeNode } from 'graphql';
+import { GraphQLSchema, Kind, TypeNode } from 'graphql';
 import { isNonNullType, maybeLazy } from '../../utils';
 
 import { TsVisitor } from '@graphql-codegen/typescript';
@@ -13,9 +13,15 @@ interface Props {
   parentType?: TypeNode;
 }
 
+function appendIfNoCurrentEndingExists(initial: string, appendage: string) {
+  if (initial?.endsWith('.optional()') || initial?.endsWith('.defined()') || initial?.endsWith('.required()')) {
+    return initial;
+  }
+  return `${initial}${appendage}`;
+}
+
 export default function getFieldTypeSchema({ config, tsVisitor, schema, type, parentType }: Props): string {
-  if (type?.kind === 'ListType') {
-    // @ts-ignore duck-typing
+  if (type?.kind === Kind.LIST_TYPE) {
     const gen = getFieldTypeSchema({ config, tsVisitor, schema, type: type.type, parentType: type });
     if (!isNonNullType(parentType)) {
       return `yup.array().of(${maybeLazy(type.type, gen)}).optional()`;
@@ -23,20 +29,15 @@ export default function getFieldTypeSchema({ config, tsVisitor, schema, type, pa
     return `yup.array().of(${maybeLazy(type.type, gen)})`;
   }
 
-  if (type?.kind === 'NonNullType') {
+  if (type?.kind === Kind.NON_NULL_TYPE) {
     const gen = getFieldTypeSchema({ config, tsVisitor, schema, type: type.type, parentType: type });
-    return `${gen}.defined()`;
+    return maybeLazy(type.type, appendIfNoCurrentEndingExists(gen, '.defined()'));
   }
 
-  if (type?.kind === 'NamedType') {
+  if (type?.kind === Kind.NAMED_TYPE) {
     const gen = getNameNodeSchema({ config, tsVisitor, schema, node: type.name });
-    const typ = schema.getType(type.name.value);
-    if (typ?.astNode?.kind === 'ObjectTypeDefinition') {
-      // @ts-ignore duck-typing If this has fields, it corresponds to InterfaceTypeDefinition.
-      if (typeof typ?.getFields === 'function') {
-        return gen;
-      }
-      return `${gen}.optional()`;
+    if (parentType?.kind && parentType?.kind !== Kind.NON_NULL_TYPE) {
+      return appendIfNoCurrentEndingExists(gen, '.optional()');
     }
     return gen;
   }
