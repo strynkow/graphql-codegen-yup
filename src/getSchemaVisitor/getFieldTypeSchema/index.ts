@@ -36,10 +36,10 @@ export default function getFieldTypeSchema({ config, tsVisitor, schema, type, pa
 
   if (type?.kind === Kind.NAMED_TYPE) {
     const gen = getNameNodeSchema({ config, tsVisitor, schema, node: type.name });
-    if (parentType?.kind && parentType?.kind !== Kind.NON_NULL_TYPE) {
-      return appendIfNoCurrentEndingExists(gen, '.optional()');
+    if ((parentType && parentType.kind) === Kind.NON_NULL_TYPE) {
+      return gen;
     }
-    return gen;
+    return appendIfNoCurrentEndingExists(gen, '.optional()');
   }
   return '';
 }

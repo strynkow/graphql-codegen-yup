@@ -24,10 +24,10 @@ function getFieldTypeSchema(_a) {
     }
     if ((type === null || type === void 0 ? void 0 : type.kind) === graphql_1.Kind.NAMED_TYPE) {
         var gen = (0, getNameNodeSchema_1["default"])({ config: config, tsVisitor: tsVisitor, schema: schema, node: type.name });
-        if ((parentType === null || parentType === void 0 ? void 0 : parentType.kind) && (parentType === null || parentType === void 0 ? void 0 : parentType.kind) !== graphql_1.Kind.NON_NULL_TYPE) {
-            return appendIfNoCurrentEndingExists(gen, '.optional()');
+        if ((parentType && parentType.kind) === graphql_1.Kind.NON_NULL_TYPE) {
+            return gen;
         }
-        return gen;
+        return appendIfNoCurrentEndingExists(gen, '.optional()');
     }
     return '';
 }
