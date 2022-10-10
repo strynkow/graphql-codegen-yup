@@ -1,5 +1,6 @@
 "use strict";
 exports.__esModule = true;
+var graphql_1 = require("graphql");
 function getNameNodeSchema(_a) {
     var _b, _c, _d, _e;
     var config = _a.config, tsVisitor = _a.tsVisitor, schema = _a.schema, node = _a.node;
@@ -20,12 +21,12 @@ function getNameNodeSchema(_a) {
         var enumName = tsVisitor.convertName(typ.name);
         return "".concat(enumName, "Schema()");
     }
-    var primitive = getScalar(config, tsVisitor, node.value);
+    var primitive = getScalar(config, tsVisitor, node.value, schema);
     return primitive;
 }
 exports["default"] = getNameNodeSchema;
-var getScalar = function (config, tsVisitor, scalarName) {
-    var _a;
+var getScalar = function (config, tsVisitor, scalarName, schema) {
+    var _a, _b, _c;
     if ((_a = config.scalarSchemas) === null || _a === void 0 ? void 0 : _a[scalarName]) {
         return config.scalarSchemas[scalarName];
     }
@@ -37,6 +38,9 @@ var getScalar = function (config, tsVisitor, scalarName) {
             return "yup.number()";
         case 'boolean':
             return "yup.boolean()";
+    }
+    if (((_c = (_b = schema.getType(scalarName)) === null || _b === void 0 ? void 0 : _b.astNode) === null || _c === void 0 ? void 0 : _c.kind) === graphql_1.Kind.UNION_TYPE_DEFINITION) {
+        return "".concat(scalarName, "Schema()");
     }
     console.warn("Unable to find matching type for: ".concat(scalarName, ". Defaulting to yup.mixed()."));
     return "yup.mixed()";

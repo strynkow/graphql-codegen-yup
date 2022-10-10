@@ -1,4 +1,4 @@
-import { GraphQLSchema, NameNode } from 'graphql';
+import { GraphQLSchema, Kind, NameNode } from 'graphql';
 
 import { TsVisitor } from '@graphql-codegen/typescript';
 import { ValidationSchemaPluginConfig } from '../../types';
@@ -33,11 +33,16 @@ export default function getNameNodeSchema({ config, tsVisitor, schema, node }: P
     return `${enumName}Schema()`;
   }
 
-  const primitive = getScalar(config, tsVisitor, node.value);
+  const primitive = getScalar(config, tsVisitor, node.value, schema);
   return primitive;
 }
 
-const getScalar = (config: ValidationSchemaPluginConfig, tsVisitor: TsVisitor, scalarName: string): string => {
+const getScalar = (
+  config: ValidationSchemaPluginConfig,
+  tsVisitor: TsVisitor,
+  scalarName: string,
+  schema: GraphQLSchema
+): string => {
   if (config.scalarSchemas?.[scalarName]) {
     return config.scalarSchemas[scalarName];
   }
@@ -50,6 +55,11 @@ const getScalar = (config: ValidationSchemaPluginConfig, tsVisitor: TsVisitor, s
     case 'boolean':
       return `yup.boolean()`;
   }
+
+  if (schema.getType(scalarName)?.astNode?.kind === Kind.UNION_TYPE_DEFINITION) {
+    return `${scalarName}Schema()`;
+  }
+
   console.warn(`Unable to find matching type for: ${scalarName}. Defaulting to yup.mixed().`);
   return `yup.mixed()`;
 };

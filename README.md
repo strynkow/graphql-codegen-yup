@@ -4,8 +4,13 @@ Graphql codegen plugin for yup schema generation.
 
 ## Links
 
-Github: https://github.com/strynkow/graphql-codegen-yup/tree/master
-NPM: https://www.npmjs.com/package/graphql-codegen-yup
+### Github
+
+https://github.com/strynkow/graphql-codegen-yup/tree/master
+
+### NPM
+
+https://www.npmjs.com/package/graphql-codegen-yup
 
 ## Overview
 
@@ -13,7 +18,19 @@ The TLDR here is that I was looking at `graphql-codegen-typescript-validation-sc
 
 I plan on actively maintaining this. Feel free to contribute.
 
+## Install
+
+### NPM
+
+`npm i --save-dev graphql-codegen-yup`
+
+### Yarn
+
+`yarn add -D graphql-codegen-yup`
+
 ## Use
+
+Once you've installed the package, you can add it to your current codegen config in the following manner.
 
 ```yml
 generates:

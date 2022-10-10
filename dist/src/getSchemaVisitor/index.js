@@ -1,4 +1,13 @@
 "use strict";
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
 exports.__esModule = true;
 var visitor_plugin_common_1 = require("@graphql-codegen/visitor-plugin-common");
 var typescript_1 = require("@graphql-codegen/typescript");
@@ -67,6 +76,28 @@ function getSchemaVisitor(schema, config) {
                 shape,
                 (0, visitor_plugin_common_1.indent)('})'),
             ].join('\n')).string;
+        },
+        UnionTypeDefinition: function (node) {
+            var name = tsVisitor.convertName(node.name.value);
+            importTypes.push(name);
+            var shape = [];
+            node.types.forEach(function (type) {
+                var _a, _b;
+                shape.push((0, visitor_plugin_common_1.indent)("case '".concat((_a = type === null || type === void 0 ? void 0 : type.name) === null || _a === void 0 ? void 0 : _a.value, "':"), 3));
+                shape.push((0, visitor_plugin_common_1.indent)("return ".concat((_b = type === null || type === void 0 ? void 0 : type.name) === null || _b === void 0 ? void 0 : _b.value, "Schema();"), 4));
+            });
+            return new visitor_plugin_common_1.DeclarationBlock({})["export"]()
+                .asKind('function')
+                .withName("".concat(name, "Schema(): any"))
+                .withBlock(__spreadArray(__spreadArray([
+                (0, visitor_plugin_common_1.indent)("return yup.lazy((value) => {"),
+                (0, visitor_plugin_common_1.indent)('switch (value?.__typename) {', 2)
+            ], shape, true), [
+                (0, visitor_plugin_common_1.indent)("default:", 3),
+                (0, visitor_plugin_common_1.indent)("throw new Error('Type not found.');", 4),
+                (0, visitor_plugin_common_1.indent)('}', 3),
+                (0, visitor_plugin_common_1.indent)('})'),
+            ], false).join('\n')).string;
         }
     };
 }

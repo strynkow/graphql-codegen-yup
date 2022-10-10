@@ -1,0 +1,88 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Nested types compiles inputs 1`] = `
+"export function BlueEyesWhiteDragon0Schema(): yup.SchemaOf<BlueEyesWhiteDragon0> {
+  return yup.object({
+    __typename: yup.mixed().oneOf(['BlueEyesWhiteDragon0', undefined]),
+    str: yup.string().defined()
+  })
+}
+
+export function BlueEyesWhiteDragon1Schema(): yup.SchemaOf<BlueEyesWhiteDragon1> {
+  return yup.object({
+    __typename: yup.mixed().oneOf(['BlueEyesWhiteDragon1', undefined]),
+    num: yup.number().defined()
+  })
+}
+
+export function BlueEyesWhiteDragon2Schema(): yup.SchemaOf<BlueEyesWhiteDragon2> {
+  return yup.object({
+    __typename: yup.mixed().oneOf(['BlueEyesWhiteDragon2', undefined]),
+    num: yup.number().defined()
+  })
+}
+
+export function BlueEyesUltimateDragonSchema(): any {
+  return yup.lazy((value) => {
+    switch (value?.__typename) {
+      case 'BlueEyesWhiteDragon0':
+        return BlueEyesWhiteDragon0Schema();
+      case 'BlueEyesWhiteDragon1':
+        return BlueEyesWhiteDragon1Schema();
+      case 'BlueEyesWhiteDragon2':
+        return BlueEyesWhiteDragon2Schema();
+      default:
+        throw new Error('Type not found.');
+      }
+  })
+}
+"
+`;
+
+exports[`Nested types compiles inputs 2`] = `
+"export function BlueEyesWhiteDragon0Schema(): yup.SchemaOf<BlueEyesWhiteDragon0> {
+  return yup.object({
+    __typename: yup.mixed().oneOf(['BlueEyesWhiteDragon0', undefined]),
+    str: yup.string().defined()
+  })
+}
+
+export function BlueEyesWhiteDragon1Schema(): yup.SchemaOf<BlueEyesWhiteDragon1> {
+  return yup.object({
+    __typename: yup.mixed().oneOf(['BlueEyesWhiteDragon1', undefined]),
+    num: yup.number().defined()
+  })
+}
+
+export function BlueEyesWhiteDragon2Schema(): yup.SchemaOf<BlueEyesWhiteDragon2> {
+  return yup.object({
+    __typename: yup.mixed().oneOf(['BlueEyesWhiteDragon2', undefined]),
+    num: yup.number().defined()
+  })
+}
+
+export function BlueEyesUltimateDragonSchema(): any {
+  return yup.lazy((value) => {
+    switch (value?.__typename) {
+      case 'BlueEyesWhiteDragon0':
+        return BlueEyesWhiteDragon0Schema();
+      case 'BlueEyesWhiteDragon1':
+        return BlueEyesWhiteDragon1Schema();
+      case 'BlueEyesWhiteDragon2':
+        return BlueEyesWhiteDragon2Schema();
+      default:
+        throw new Error('Type not found.');
+      }
+  })
+}
+
+export function BoardSchema(): yup.SchemaOf<Board> {
+  return yup.object({
+    __typename: yup.mixed().oneOf(['Board', undefined]),
+    slot0: BlueEyesUltimateDragonSchema().defined(),
+    slot1: BlueEyesWhiteDragon1Schema().defined(),
+    slot2: BlueEyesWhiteDragon0Schema().defined()
+  })
+}
+"
+`;

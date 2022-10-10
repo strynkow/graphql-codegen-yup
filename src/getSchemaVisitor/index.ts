@@ -5,6 +5,7 @@ import {
   InputObjectTypeDefinitionNode,
   InterfaceTypeDefinitionNode,
   ObjectTypeDefinitionNode,
+  UnionTypeDefinitionNode,
 } from 'graphql';
 
 import { TsVisitor } from '@graphql-codegen/typescript';
@@ -102,5 +103,33 @@ export default function getSchemaVisitor(schema: GraphQLSchema, config: Validati
           ].join('\n')
         ).string;
     },
+    UnionTypeDefinition: (node: UnionTypeDefinitionNode) => {
+      const name = tsVisitor.convertName(node.name.value);
+      importTypes.push(name);
+
+      const shape = [];
+      node.types.forEach((type) => {
+        shape.push(indent(`case '${type?.name?.value}':`, 3));
+        shape.push(indent(`return ${type?.name?.value}Schema();`, 4));
+      });
+
+      return new DeclarationBlock({})
+        .export()
+        .asKind('function')
+        .withName(`${name}Schema(): any`)
+        .withBlock(
+          [
+            indent(`return yup.lazy((value) => {`),
+            indent('switch (value?.__typename) {', 2),
+            ...shape,
+            indent(`default:`, 3),
+            indent(`throw new Error('Type not found.');`, 4),
+            indent('}', 3),
+            indent('})'),
+          ].join('\n')
+        ).string;
+    },
+    // Skip. These refer to top level op types, like mutation and query.
+    // OperationTypeDefinition: (node: InterfaceTypeDefinitionNode) => {},
   };
 }

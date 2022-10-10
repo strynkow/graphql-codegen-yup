@@ -1,6 +1,6 @@
 {
   "name": "graphql-codegen-yup",
-  "version": "1.0.9",
+  "version": "1.0.12",
   "description": "Forked from graphql-codegen-typescript-validation-schema. Added support for fragments and some other typing support. Was initially going to include it there, but zod is a bit borked on nested typing, so I just added a this lib for yup.",
   "main": "dist/src/index.js",
   "scripts": {
@@ -12,6 +12,7 @@
     "codegen",
     "gql",
     "yup",
+    "schema",
     "type"
   ],
   "author": "OrangeSeven7",
